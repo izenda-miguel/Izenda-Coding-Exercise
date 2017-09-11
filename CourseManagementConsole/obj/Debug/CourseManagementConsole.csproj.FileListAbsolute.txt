@@ -1,0 +1,13 @@
+C:\Users\mcervantes\Documents\Izenda-Coding-Exercise\IzendaCourseManagement\CourseManagementConsole\bin\Debug\CourseManagementConsole.exe.config
+C:\Users\mcervantes\Documents\Izenda-Coding-Exercise\IzendaCourseManagement\CourseManagementConsole\bin\Debug\CourseManagementConsole.exe
+C:\Users\mcervantes\Documents\Izenda-Coding-Exercise\IzendaCourseManagement\CourseManagementConsole\bin\Debug\CourseManagementConsole.pdb
+C:\Users\mcervantes\Documents\Izenda-Coding-Exercise\IzendaCourseManagement\CourseManagementConsole\obj\Debug\CourseManagementConsole.exe
+C:\Users\mcervantes\Documents\Izenda-Coding-Exercise\IzendaCourseManagement\CourseManagementConsole\obj\Debug\CourseManagementConsole.pdb
+C:\Users\mcervantes\Documents\Izenda-Coding-Exercise\CourseManagementConsole\bin\Debug\CourseManagementConsole.exe.config
+C:\Users\mcervantes\Documents\Izenda-Coding-Exercise\CourseManagementConsole\bin\Debug\CourseManagementConsole.exe
+C:\Users\mcervantes\Documents\Izenda-Coding-Exercise\CourseManagementConsole\bin\Debug\CourseManagementConsole.pdb
+C:\Users\mcervantes\Documents\Izenda-Coding-Exercise\CourseManagementConsole\bin\Debug\CourseManagement.dll
+C:\Users\mcervantes\Documents\Izenda-Coding-Exercise\CourseManagementConsole\bin\Debug\CourseManagement.pdb
+C:\Users\mcervantes\Documents\Izenda-Coding-Exercise\CourseManagementConsole\obj\Debug\CourseManagementConsole.csprojResolveAssemblyReference.cache
+C:\Users\mcervantes\Documents\Izenda-Coding-Exercise\CourseManagementConsole\obj\Debug\CourseManagementConsole.exe
+C:\Users\mcervantes\Documents\Izenda-Coding-Exercise\CourseManagementConsole\obj\Debug\CourseManagementConsole.pdb
