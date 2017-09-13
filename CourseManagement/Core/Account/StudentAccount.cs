@@ -60,7 +60,10 @@ namespace CourseManagement.Core.Account
         /// <param name="course">The course to register for.</param>
         public void RegisterForCourse(Course course)
         {
-            this.courseGradesDataManager.InsertCourseToCourseGrades(course, this.Student.Id).Wait();
+            if (course != null)
+            {
+                this.courseGradesDataManager.InsertCourseToCourseGrades(course, this.Student.Id).Wait();
+            }
         }
 
         /// <summary>

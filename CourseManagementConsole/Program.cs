@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using CourseManagement.Helpers;
 using CourseManagement.Enums;
 using CourseManagement.Models;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace CourseManagementConsole
 {
@@ -97,6 +99,7 @@ namespace CourseManagementConsole
                 if (permissionOption == -1)
                 {
                     Console.Clear();
+                    Process.Start(Assembly.GetExecutingAssembly().Location);
                     Environment.Exit(0);
                 }
 

@@ -70,6 +70,7 @@ namespace CourseManagement.Models
             sb.AppendLine($"Student's GPA: {this.GPA.ToString("F")}");
             sb.AppendLine($"Student's credit hours: {this.CreditHours}");
             sb.AppendLine($"Student's grade level: {this.Level}");
+            sb.AppendLine();
             sb.AppendLine($"Student's course grades: {Environment.NewLine}{string.Join(Environment.NewLine, this.Courses)}");
 
             return sb.ToString();
