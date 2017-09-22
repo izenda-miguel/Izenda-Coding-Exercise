@@ -16,7 +16,7 @@ namespace CourseManagement.DataAccess
         /// Initializes a new instance of the <see cref="AdminAccountDataManager"/> class.
         /// </summary>
         public AdminAccountDataManager()
-            : base(ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString)
+            : base(ConfigurationManager.ConnectionStrings["EntityDbConnection"].ConnectionString)
         {
         }
 
@@ -37,8 +37,8 @@ namespace CourseManagement.DataAccess
             {
                 new SqlParameter("@firstName", SqlDbType.NVarChar) { Value = admin.FirstName },
                 new SqlParameter("@lastName", SqlDbType.NVarChar) { Value = admin.LastName },
-                new SqlParameter("@username", SqlDbType.NVarChar) { Value = admin.Username },
-                new SqlParameter("@password", SqlDbType.NVarChar) { Value = admin.Password },
+                new SqlParameter("@username", SqlDbType.NVarChar) { Value = admin.Credentials.Username },
+                new SqlParameter("@password", SqlDbType.NVarChar) { Value = admin.Credentials.Username },
                 new SqlParameter("@userType", SqlDbType.NVarChar) { Value = admin.UserType },
                 new SqlParameter("@hireDate", SqlDbType.Date) { Value = admin.HireDate.Date }
             });
@@ -80,7 +80,7 @@ namespace CourseManagement.DataAccess
                 admin.Id = Convert.ToInt32(reader["Id"]);
                 admin.FirstName = reader["FirstName"].ToString();
                 admin.LastName = reader["LastName"].ToString();
-                admin.Username = reader["Username"].ToString();
+                admin.Credentials.Username = reader["Username"].ToString();
                 admin.HireDate = DateTime.Parse(reader["HireDate"].ToString());
             }
 

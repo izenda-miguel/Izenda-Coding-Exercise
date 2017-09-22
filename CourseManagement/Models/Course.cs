@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace CourseManagement.Models
@@ -26,6 +27,11 @@ namespace CourseManagement.Models
         public string CourseDescription { get; set; }
 
         /// <summary>
+        /// The instructor id.
+        /// </summary>
+        public int? InstructorId { get; set; }
+
+        /// <summary>
         /// The instructor.
         /// </summary>
         public Instructor Instructor { get; set; }
@@ -33,11 +39,13 @@ namespace CourseManagement.Models
         /// <summary>
         /// The start date.
         /// </summary>
+        [Column(TypeName = "date")]
         public DateTime StartDate { get; set; }
 
         /// <summary>
         /// The end date.
         /// </summary>
+        [Column(TypeName = "date")]
         public DateTime EndDate
         {
             get { return _endDate; }

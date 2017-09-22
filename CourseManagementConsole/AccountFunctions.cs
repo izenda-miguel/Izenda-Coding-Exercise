@@ -66,7 +66,7 @@ namespace CourseManagementConsole
         /// </summary>
         private void ViewCurrentUserInformation()
         {
-            Console.WriteLine(this.account.GetAccountInfo().ToString());
+            Console.WriteLine(this.account.GetAndSetFullUserInformation().ToString());
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace CourseManagementConsole
             Console.Write("Is the instructor a current instructor, and do you have the instructors information? ");
             var isInstructorInfoAvail = ConsoleExtensions.WriteThenReadForYesOrNo();
 
-            var instructorId = 0;
+            int instructorId = 0;
             string instructorUsername = null;
             if (isInstructorInfoAvail == "yes")
             {
@@ -114,11 +114,12 @@ namespace CourseManagementConsole
                 } while (instructorId == 0 && string.IsNullOrEmpty(instructorUsername));
             }
 
-            this.courseManager.CreateCourse(course, instructorUsername, instructorId);
+            course.InstructorId = instructorId;
+            this.courseManager.CreateCourse(course, instructorUsername);
 
             Console.WriteLine();
             Console.WriteLine("The course has been created! See information below: ");
-            Console.WriteLine(this.courseManager.LookUpSpecificCourse(course.CourseName).ToString());
+            Console.WriteLine(this.courseManager.LookUpSpecificCourse(null, course.Id).ToString());
         }
 
         /// <summary>
@@ -323,7 +324,9 @@ namespace CourseManagementConsole
             {
                 Console.WriteLine("Please enter the instructor's id which you want to assign to this course.");
                 Console.Write("Instructor's id: ");
-                course.Instructor.Id = Convert.ToInt32(Console.ReadLine());
+                var instructorId = 0;
+                int.TryParse(Console.ReadLine(), out instructorId);
+                course.InstructorId = instructorId;
                 instructor = this.courseManager.AssignCourseInstructor(course);
                 Console.WriteLine();
             } while (instructor == null);

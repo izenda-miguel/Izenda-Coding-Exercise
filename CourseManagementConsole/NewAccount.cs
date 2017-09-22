@@ -3,6 +3,7 @@ using CourseManagement.Core;
 using CourseManagement.Enums;
 using CourseManagement.Helpers;
 using CourseManagement.Models;
+using CourseManagement.Core.Account;
 
 namespace CourseManagementConsole
 {
@@ -11,13 +12,16 @@ namespace CourseManagementConsole
     /// </summary>
     public class NewAccount
     {
-        private UserCredentialsManager userCredManager;
+        private readonly UserCredentialsManager userCredManager;
+        private readonly AccountBase account;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NewAccount"/> class.
         /// </summary>
-        public NewAccount()
+        /// <param name="account">The account to be used.</param>
+        public NewAccount(AccountBase account)
         {
+            this.account = account;
             this.userCredManager = new UserCredentialsManager();
         }
 
@@ -28,18 +32,17 @@ namespace CourseManagementConsole
         public void CreateAccount(UserType userType)
         {
             Console.WriteLine("Fill out the following fields: ");
-            var user = this.ReadFields();
 
-            var account = AccountUtilities.GetUserAccountClass(user, userType);
-            account.MoreInformationNeeded?.Invoke(null, EventArgs.Empty);
-            account.CreateAccount();
+            this.account.SetUserInformation(this.ReadFields(userType));
+            this.account.MoreInformationNeeded?.Invoke(null, EventArgs.Empty);
+            this.account.CreateAccount();
         }
 
         /// <summary>
         /// Reads the fields to create an account.
         /// </summary>
         /// <returns>Returns the user's information.</returns>
-        private User ReadFields()
+        private User ReadFields(UserType userType)
         {
             Console.Write("First Name: ");
             var firstName = Console.ReadLine();
@@ -71,8 +74,11 @@ namespace CourseManagementConsole
             {
                 FirstName = firstName,
                 LastName = lastName,
-                Username = username,
-                Password = password
+                Credentials = new Credentials(userType)
+                {
+                    Username = username,
+                    Password = password
+                }
             };
         }
     }

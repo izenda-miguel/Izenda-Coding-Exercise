@@ -16,7 +16,7 @@ namespace CourseManagement.DataAccess
         /// Initializes a new instance of the <see cref="StudentAccountDataManager"/> class.
         /// </summary>
         public StudentAccountDataManager()
-            : base(ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString)
+            : base(ConfigurationManager.ConnectionStrings["EntityDbConnection"].ConnectionString)
         {
         }
 
@@ -37,12 +37,12 @@ namespace CourseManagement.DataAccess
             {
                 new SqlParameter("@firstName", SqlDbType.NVarChar) { Value = student.FirstName },
                 new SqlParameter("@lastName", SqlDbType.NVarChar) { Value = student.LastName },
-                new SqlParameter("@username", SqlDbType.NVarChar) { Value = student.Username },
-                new SqlParameter("@password", SqlDbType.NVarChar) { Value = student.Password },
+                new SqlParameter("@username", SqlDbType.NVarChar) { Value = student.Credentials.Username },
+                new SqlParameter("@password", SqlDbType.NVarChar) { Value = student.Credentials.Username },
                 new SqlParameter("@userType", SqlDbType.NVarChar) { Value = student.UserType },
                 new SqlParameter("@gpa", SqlDbType.Decimal) { Value = student.GPA },
                 new SqlParameter("@creditHours", SqlDbType.Decimal) { Value = student.CreditHours },
-                new SqlParameter("@level", SqlDbType.NVarChar) { Value = student.Level }
+                new SqlParameter("@level", SqlDbType.NVarChar) { Value = student.GradeLevel }
             });
 
             await this.ExecuteCommand(command);
@@ -104,7 +104,7 @@ namespace CourseManagement.DataAccess
                 student.FirstName = reader["FirstName"].ToString();
                 student.LastName = reader["LastName"].ToString();
                 student.GPA = Convert.ToDouble(reader["GPA"]);
-                student.Username = reader["Username"].ToString();
+                student.Credentials.Username = reader["Username"].ToString();
                 student.CreditHours = Convert.ToDouble(reader["CreditHours"]);
             }
 

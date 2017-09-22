@@ -1,6 +1,8 @@
 ﻿using System;
 using CourseManagement.DataAccess;
 using CourseManagement.Models;
+using System.Data.Entity;
+using System.Linq;
 
 namespace CourseManagement.Core.Account
 {
@@ -9,14 +11,13 @@ namespace CourseManagement.Core.Account
     /// </summary>
     public class InstructorAccount : AccountBase
     {
-        private readonly InstructorAccountDataManager instructorAccountDataManager;
+        private readonly CourseManagementDbContext context = new CourseManagementDbContext();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InstructorAccount"/> class.
         /// </summary>
         public InstructorAccount()
         {
-            this.instructorAccountDataManager = new InstructorAccountDataManager();
         }
 
         /// <summary>
@@ -25,8 +26,7 @@ namespace CourseManagement.Core.Account
         /// <param name="user">The current user.</param>
         public InstructorAccount(User user)
         {
-            this.instructorAccountDataManager = new InstructorAccountDataManager();
-            this.Instructor = new Instructor(user);
+            this.Instructor = (Instructor)user;
         }
 
         /// <summary>
@@ -35,20 +35,21 @@ namespace CourseManagement.Core.Account
         public Instructor Instructor { get; private set; }
 
         /// <summary>
-        /// Gets the current account info.
+        /// Sets the user information
         /// </summary>
-        /// <returns>Returns the current account.</returns>
-        public override User GetAccountInfo()
+        /// <param name="user">The user information.</param>
+        public override void SetUserInformation(User user)
         {
-            return this.Instructor;
+            this.Instructor = new Instructor(user);
         }
 
         /// <summary>
-        /// Retrieves the full account information.
+        /// Gets and sets the full user information.
         /// </summary>
-        public override void RetrieveFullAccountInformation()
+        public override User GetAndSetFullUserInformation()
         {
-            this.Instructor = this.instructorAccountDataManager.GetInstructorInfoBasedOnUsername(this.Instructor?.Username).Result;
+            this.Instructor = context.Instructors.Include(p => p.Credentials).SingleOrDefault(s => s.Id == this.Instructor.Id);
+            return this.Instructor;
         }
 
         /// <summary>
@@ -56,7 +57,8 @@ namespace CourseManagement.Core.Account
         /// </summary>
         public override void CreateAccount()
         {
-            this.instructorAccountDataManager.InsertInstructorAccountInfo(this.Instructor).Wait();
+            context.Instructors.Add(this.Instructor);
+            context.SaveChangesAsync().Wait();
         }
 
         /// <summary>

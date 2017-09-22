@@ -30,7 +30,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -49,6 +58,7 @@
     <Compile Include="Core\UserCredentialsManager.cs" />
     <Compile Include="DataAccess\CourseDataManager.cs" />
     <Compile Include="DataAccess\CourseGradesDataManager.cs" />
+    <Compile Include="DataAccess\CourseManagementDbContext.cs" />
     <Compile Include="DataAccess\InstructorAccountDataManager.cs" />
     <Compile Include="DataAccess\AdminAccountDataManager.cs" />
     <Compile Include="DataAccess\StudentAccountDataManager.cs" />
@@ -61,6 +71,45 @@
     <Compile Include="Helpers\AccountUtilities.cs" />
     <Compile Include="Helpers\CourseExtensions.cs" />
     <Compile Include="Helpers\GradeLevelExtensions.cs" />
+    <Compile Include="Helpers\LetterGradeExtensions.cs" />
+    <Compile Include="Helpers\UserTypeExtensions.cs" />
+    <Compile Include="Migrations\201709131951112_InitialMigration.cs" />
+    <Compile Include="Migrations\201709131951112_InitialMigration.Designer.cs">
+      <DependentUpon>201709131951112_InitialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709141156155_AddUserTypeToCredentialsMigration.cs" />
+    <Compile Include="Migrations\201709141156155_AddUserTypeToCredentialsMigration.Designer.cs">
+      <DependentUpon>201709141156155_AddUserTypeToCredentialsMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709141158528_MakeUsernameNotNullableMigration.cs" />
+    <Compile Include="Migrations\201709141158528_MakeUsernameNotNullableMigration.Designer.cs">
+      <DependentUpon>201709141158528_MakeUsernameNotNullableMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709141259195_UpdateUserTypeColumnsMigration.cs" />
+    <Compile Include="Migrations\201709141259195_UpdateUserTypeColumnsMigration.Designer.cs">
+      <DependentUpon>201709141259195_UpdateUserTypeColumnsMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709141334555_AddGradeLevelToStudentsMigration.cs" />
+    <Compile Include="Migrations\201709141334555_AddGradeLevelToStudentsMigration.Designer.cs">
+      <DependentUpon>201709141334555_AddGradeLevelToStudentsMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709141423521_ConvertDatesColumnsMigration.cs" />
+    <Compile Include="Migrations\201709141423521_ConvertDatesColumnsMigration.Designer.cs">
+      <DependentUpon>201709141423521_ConvertDatesColumnsMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709141500216_MakeInstructorIdNullableMigration.cs" />
+    <Compile Include="Migrations\201709141500216_MakeInstructorIdNullableMigration.Designer.cs">
+      <DependentUpon>201709141500216_MakeInstructorIdNullableMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709141511449_ChangeFinalGradeToStringMigration.cs" />
+    <Compile Include="Migrations\201709141511449_ChangeFinalGradeToStringMigration.Designer.cs">
+      <DependentUpon>201709141511449_ChangeFinalGradeToStringMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709141542525_AddStudentIdPropToCoursesMigration.cs" />
+    <Compile Include="Migrations\201709141542525_AddStudentIdPropToCoursesMigration.Designer.cs">
+      <DependentUpon>201709141542525_AddStudentIdPropToCoursesMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Administrator.cs" />
     <Compile Include="Models\Credentials.cs" />
     <Compile Include="Models\User.cs" />
@@ -71,7 +120,39 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201709131951112_InitialMigration.resx">
+      <DependentUpon>201709131951112_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709141156155_AddUserTypeToCredentialsMigration.resx">
+      <DependentUpon>201709141156155_AddUserTypeToCredentialsMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709141158528_MakeUsernameNotNullableMigration.resx">
+      <DependentUpon>201709141158528_MakeUsernameNotNullableMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709141259195_UpdateUserTypeColumnsMigration.resx">
+      <DependentUpon>201709141259195_UpdateUserTypeColumnsMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709141334555_AddGradeLevelToStudentsMigration.resx">
+      <DependentUpon>201709141334555_AddGradeLevelToStudentsMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709141423521_ConvertDatesColumnsMigration.resx">
+      <DependentUpon>201709141423521_ConvertDatesColumnsMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709141500216_MakeInstructorIdNullableMigration.resx">
+      <DependentUpon>201709141500216_MakeInstructorIdNullableMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709141511449_ChangeFinalGradeToStringMigration.resx">
+      <DependentUpon>201709141511449_ChangeFinalGradeToStringMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709141542525_AddStudentIdPropToCoursesMigration.resx">
+      <DependentUpon>201709141542525_AddStudentIdPropToCoursesMigration.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

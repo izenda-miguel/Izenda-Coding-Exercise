@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourseManagement", "CourseM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourseManagementConsole", "CourseManagementConsole\CourseManagementConsole.csproj", "{16583E61-6EA5-45B2-9C44-6E8AEB9A63CB}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "CourseManagementDatabase", "CourseManagementDatabase\CourseManagementDatabase.sqlproj", "{FD631F2D-07F8-4A2E-BF07-16223AFD6A0B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,12 +21,6 @@ Global
 		{16583E61-6EA5-45B2-9C44-6E8AEB9A63CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16583E61-6EA5-45B2-9C44-6E8AEB9A63CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16583E61-6EA5-45B2-9C44-6E8AEB9A63CB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FD631F2D-07F8-4A2E-BF07-16223AFD6A0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FD631F2D-07F8-4A2E-BF07-16223AFD6A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FD631F2D-07F8-4A2E-BF07-16223AFD6A0B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{FD631F2D-07F8-4A2E-BF07-16223AFD6A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FD631F2D-07F8-4A2E-BF07-16223AFD6A0B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FD631F2D-07F8-4A2E-BF07-16223AFD6A0B}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

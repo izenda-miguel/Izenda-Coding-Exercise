@@ -3,6 +3,7 @@ using CourseManagement.Enums;
 using CourseManagement.Helpers;
 using System.Text;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CourseManagement.Models
 {
@@ -26,10 +27,9 @@ namespace CourseManagement.Models
         public Student(User user)
             : this()
         {
-            this.FirstName = user.FirstName ?? string.Empty;
-            this.LastName = user.LastName ?? string.Empty;
-            this.Username = user.Username ?? string.Empty;
-            this.Password = user.Password ?? string.Empty;
+            this.FirstName = user?.FirstName;
+            this.LastName = user?.LastName;
+            this.Credentials = user?.Credentials;
         }
 
         /// <summary>
@@ -45,14 +45,30 @@ namespace CourseManagement.Models
         /// <summary>
         /// The grade level.
         /// </summary>
-        public GradeLevel Level
+        [NotMapped]
+        public GradeLevel GradeLevel
         {
             get
             {
                 return GradeLevelExtensions.GetGradeLevelBasedOnCreditHours(this.CreditHours);
             }
         }
-        
+
+        /// <summary>
+        /// The grade level string.
+        /// </summary>
+        [Column("GradeLevel")]
+        public string LevelString
+        {
+            get
+            {
+                return this.GradeLevel.ToString();
+            }
+            private set
+            {
+            }
+        }
+
         /// <summary>
         /// The list of courses.
         /// </summary>
@@ -69,7 +85,7 @@ namespace CourseManagement.Models
             sb.Append(base.ToString());
             sb.AppendLine($"Student's GPA: {this.GPA.ToString("F")}");
             sb.AppendLine($"Student's credit hours: {this.CreditHours}");
-            sb.AppendLine($"Student's grade level: {this.Level}");
+            sb.AppendLine($"Student's grade level: {this.GradeLevel}");
             sb.AppendLine();
             sb.AppendLine($"Student's course grades: {Environment.NewLine}{string.Join(Environment.NewLine, this.Courses)}");
 

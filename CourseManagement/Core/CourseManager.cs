@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using CourseManagement.Models;
 using CourseManagement.DataAccess;
+using System.Linq;
+using System.Data.Entity;
 
 namespace CourseManagement.Core
 {
@@ -10,6 +12,8 @@ namespace CourseManagement.Core
     /// </summary>
     public class CourseManager
     {
+        private readonly CourseManagementDbContext context = new CourseManagementDbContext();
+
         private readonly CourseDataManager courseDataManager;
         private readonly CourseGradesDataManager courseGradesDataManager;
         private readonly InstructorAccountDataManager instructorAccountDataManager;
@@ -32,18 +36,16 @@ namespace CourseManagement.Core
         /// <param name="course">The course to be created.</param>
         /// <param name="instructorUsername">The instructor's username.</param>
         /// <param name="instructorId">The instructor's id.</param>
-        public void CreateCourse(Course course, string instructorUsername, int instructorId)
+        public void CreateCourse(Course course, string instructorUsername)
         {
-            course.Instructor = this.LookUpInstructor(instructorId, instructorUsername);
+            course.Instructor = this.LookUpInstructor(course.InstructorId.GetValueOrDefault(), instructorUsername);
+            if (course.Instructor == null)
+            {
+                course.InstructorId = null;
+            }
 
-            if (course.Instructor != null)
-            {
-                this.courseDataManager.InsertNewCourseWithInstructor(course).Wait();
-            }
-            else
-            {
-                this.courseDataManager.InsertNewCourse(course).Wait();
-            }
+            context.Courses.Add(course);
+            context.SaveChangesAsync().Wait();
         }
 
         /// <summary>
@@ -58,12 +60,12 @@ namespace CourseManagement.Core
 
             if (id != 0)
             {
-                instructor = this.instructorAccountDataManager.GetInstructorInfoBasedOnId(id).Result;
+                instructor = context.Instructors.Include(p => p.Credentials).FirstOrDefault(i => i.Id == id);
             }
 
             if (instructor == null && !string.IsNullOrEmpty(username))
             {
-                instructor = this.instructorAccountDataManager.GetInstructorInfoBasedOnUsername(username).Result;
+                instructor = context.Instructors.Include(p => p.Credentials).FirstOrDefault(c => c.Credentials.Username == username);
             }
 
             return instructor;
@@ -77,19 +79,7 @@ namespace CourseManagement.Core
         /// <returns>Returns the student's information or null if not found.</returns>
         private Student LookUpStudent(int id = 0, string username = null)
         {
-            Student student = null;
-
-            if (id != 0)
-            {
-                student = this.studentAccountDataManager.GetStudentAccountInfoBasedOnId(id).Result;
-            }
-
-            if (student == null && !string.IsNullOrEmpty(username))
-            {
-                student = this.studentAccountDataManager.GetStudentAccountInfo(username).Result;
-            }
-
-            return student;
+            return context.Students.Include(p => p.Courses).FirstOrDefault(c => c.Id == id || c.Credentials.Username == username);
         }
 
         /// <summary>
@@ -100,19 +90,7 @@ namespace CourseManagement.Core
         /// <returns>Returns the course information or null if not found.</returns>
         public Course LookUpSpecificCourse(string courseName = null, int courseId = 0)
         {
-            Course course = null;
-
-            if (courseId != 0)
-            {
-                course = this.courseDataManager.GetSpecificCourseInfoBasedOnId(courseId).Result;
-            }
-
-            if (course == null && !string.IsNullOrEmpty(courseName))
-            {
-                course = this.courseDataManager.GetSpecificCourseInfoBasedOnCourseName(courseName).Result;
-            }
-
-            return course;
+            return context.Courses.Include(p => p.Instructor).FirstOrDefault(c => c.Id == courseId || c.CourseName == courseName);
         }
 
         /// <summary>
@@ -121,7 +99,7 @@ namespace CourseManagement.Core
         /// <returns>Returns all the courses.</returns>
         public List<Course> GetAllCourses()
         {
-            return new List<Course>();
+            return context.Courses.Include(p => p.Instructor).ToList();
         }
 
         /// <summary>
@@ -156,7 +134,7 @@ namespace CourseManagement.Core
         /// <returns>Returns the instructor information.</returns>
         public Instructor AssignCourseInstructor(Course course)
         {
-            course.Instructor = this.LookUpInstructor(course.Instructor.Id);
+            course.Instructor = this.LookUpInstructor(course.InstructorId.GetValueOrDefault());
 
             if (course.Instructor != null)
             {
@@ -194,7 +172,8 @@ namespace CourseManagement.Core
         {
             try
             {
-                this.courseDataManager.DeleteExistingCourse(course).Wait();
+                context.Courses.Remove(course);
+                context.SaveChangesAsync().Wait();
                 return true;
             }
             catch (Exception)

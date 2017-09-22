@@ -4,7 +4,7 @@ using CourseManagement.Enums;
 namespace CourseManagement.Helpers
 {
     /// <summary>
-    /// Extensions to grade level
+    /// Grade level enum extensions
     /// </summary>
     public static class GradeLevelExtensions
     {

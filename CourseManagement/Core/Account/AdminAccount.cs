@@ -1,6 +1,8 @@
 ﻿using System;
 using CourseManagement.DataAccess;
 using CourseManagement.Models;
+using System.Data.Entity;
+using System.Linq;
 
 namespace CourseManagement.Core.Account
 {
@@ -9,7 +11,14 @@ namespace CourseManagement.Core.Account
     /// </summary>
     public class AdminAccount : AccountBase
     {
-        private readonly AdminAccountDataManager adminAccountDataManager;
+        private readonly CourseManagementDbContext context = new CourseManagementDbContext();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AdminAccount"/> class.
+        /// </summary>
+        public AdminAccount()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AdminAccount"/> class.
@@ -17,8 +26,7 @@ namespace CourseManagement.Core.Account
         /// <param name="user">The current user.</param>
         public AdminAccount(User user)
         {
-            this.adminAccountDataManager = new AdminAccountDataManager();
-            this.Admin = new Administrator(user);
+            this.Admin = (Administrator)user;
         }
 
         /// <summary>
@@ -27,20 +35,21 @@ namespace CourseManagement.Core.Account
         public Administrator Admin { get; private set; }
 
         /// <summary>
-        /// Gets the current account info.
+        /// Sets the user information
         /// </summary>
-        /// <returns>Returns the current account.</returns>
-        public override User GetAccountInfo()
+        /// <param name="user">The user information.</param>
+        public override void SetUserInformation(User user)
         {
-            return this.Admin;
+            this.Admin = new Administrator(user);
         }
 
         /// <summary>
-        /// Retrieves the full account information.
+        /// Gets and sets the full user information.
         /// </summary>
-        public override void RetrieveFullAccountInformation()
+        public override User GetAndSetFullUserInformation()
         {
-            this.Admin = this.adminAccountDataManager.GetAdminAccountInfo(this.Admin.Username).Result;
+            this.Admin = context.Administrators.Include(p => p.Credentials).SingleOrDefault(s => s.Id == this.Admin.Id); ;
+            return this.Admin;
         }
 
         /// <summary>
@@ -48,7 +57,8 @@ namespace CourseManagement.Core.Account
         /// </summary>
         public override void CreateAccount()
         {
-            this.adminAccountDataManager.InsertAdminAccountInfo(this.Admin).Wait();
+            context.Administrators.Add(this.Admin);
+            context.SaveChangesAsync().Wait();
         }
 
         /// <summary>

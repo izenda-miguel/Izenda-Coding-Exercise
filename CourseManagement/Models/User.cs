@@ -1,5 +1,7 @@
 ﻿using CourseManagement.Enums;
+using CourseManagement.Helpers;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace CourseManagement.Models
@@ -7,7 +9,7 @@ namespace CourseManagement.Models
     /// <summary>
     /// The user base
     /// </summary>
-    public class User : Credentials
+    public class User
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="User"/> class.
@@ -15,8 +17,9 @@ namespace CourseManagement.Models
         /// <param name="userType">The user type.</param>
         /// <param name="permissions">The list of permissions for this user.</param>
         public User(UserType userType, List<Permissions> permissions)
-            : base(userType)
         {
+            this.UserTypeString = userType.ToString();
+            this.Credentials = new Credentials(userType);
             this.UserPermissions = permissions;
             this.UserPermissions.Add(Permissions.ViewCurrentUserInformation);
         }
@@ -44,6 +47,33 @@ namespace CourseManagement.Models
         public string LastName { get; set; }
 
         /// <summary>
+        /// The credentials
+        /// </summary>
+        public Credentials Credentials { get; set; }
+
+        /// <summary>
+        /// The user type string.
+        /// </summary>
+        [Column("UserType")]
+        public string UserTypeString
+        {
+            get
+            {
+                return this.UserType.ToString();
+            }
+            private set
+            {
+                this.UserType = UserTypeExtensions.ParseStringToEnum(value);
+            }
+        }
+
+        /// <summary>
+        /// The user type.
+        /// </summary>
+        [NotMapped]
+        public UserType UserType { get; private set; }
+
+        /// <summary>
         /// The list of permissions.
         /// </summary>
         public List<Permissions> UserPermissions { get; private set; }
@@ -59,7 +89,7 @@ namespace CourseManagement.Models
 
             sb.AppendLine($"{userType}'s first name: {this.FirstName}");
             sb.AppendLine($"{userType}'s last name: {this.LastName}");
-            sb.AppendLine($"{userType}'s username: {this.Username}");
+            sb.AppendLine($"{userType}'s username: {this.Credentials?.Username}");
             sb.AppendLine($"{userType}'s id: {this.Id}");
 
             return sb.ToString();

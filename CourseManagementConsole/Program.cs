@@ -42,12 +42,14 @@ namespace CourseManagementConsole
                 Console.WriteLine();
             } while (userType == UserType.Default);
 
+            var account = AccountUtilities.GetUserAccountClass(userType);
+
             // Create an account option
             while (menuOption == 2)
             {
                 try
                 {
-                    var newAccount = new NewAccount();
+                    var newAccount = new NewAccount(account);
                     newAccount.CreateAccount(userType);
                     menuOption = 1;
                     ConsoleExtensions.WriteSeperator();
@@ -80,9 +82,8 @@ namespace CourseManagementConsole
                 }
             }
 
-            var account = AccountUtilities.GetUserAccountClass(user, userType);
-            account.RetrieveFullAccountInformation();
-            var accountPermissions = account.GetAccountInfo().UserPermissions;
+            account = AccountUtilities.GetLoggedInAccount(user, userType);
+            var accountPermissions = user.UserPermissions;
              
             // Show the user's permission options (Main Menu) forever.
             int permissionOption;

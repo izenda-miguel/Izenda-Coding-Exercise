@@ -15,7 +15,7 @@ namespace CourseManagement.DataAccess
         /// Initializes a new instance of the <see cref="UserCredentialsDataManager"/> class.
         /// </summary>
         public UserCredentialsDataManager()
-            : base(ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString)
+            : base(ConfigurationManager.ConnectionStrings["EntityDbConnection"].ConnectionString)
         {
         }
 
@@ -35,8 +35,7 @@ namespace CourseManagement.DataAccess
             command.Parameters.AddRange(new[]
             {
                 new SqlParameter("@username", SqlDbType.NVarChar) { Value = credentials.Username },
-                new SqlParameter("@password", SqlDbType.NVarChar) { Value = credentials.Password },
-                new SqlParameter("@userType", SqlDbType.NVarChar) { Value = credentials.UserType },
+                new SqlParameter("@password", SqlDbType.NVarChar) { Value = credentials.Password }
             });
 
             return await this.ExecuteCommandAndAdaptToModel(command, AdaptToUserModel);
@@ -72,7 +71,7 @@ namespace CourseManagement.DataAccess
             {
                 user.FirstName = reader["FirstName"].ToString();
                 user.LastName = reader["LastName"].ToString();
-                user.Username = reader["Username"].ToString();
+                user.Credentials.Username = reader["Username"].ToString();
             }
 
             reader.Close();

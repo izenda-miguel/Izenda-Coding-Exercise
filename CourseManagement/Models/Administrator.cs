@@ -2,6 +2,7 @@
 using CourseManagement.Enums;
 using System.Collections.Generic;
 using System.Text;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CourseManagement.Models
 {
@@ -25,15 +26,15 @@ namespace CourseManagement.Models
         public Administrator(User user)
             : this()
         {
-            this.FirstName = user.FirstName ?? string.Empty;
-            this.LastName = user.LastName ?? string.Empty;
-            this.Username = user.Username ?? string.Empty;
-            this.Password = user.Password ?? string.Empty;
+            this.FirstName = user?.FirstName;
+            this.LastName = user?.LastName;
+            this.Credentials = user?.Credentials;
         }
 
         /// <summary>
         /// The hire date.
         /// </summary>
+        [Column(TypeName = "date")]
         public DateTime HireDate { get; set; }
 
         /// <summary>

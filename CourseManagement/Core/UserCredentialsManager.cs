@@ -1,5 +1,7 @@
 ﻿using CourseManagement.DataAccess;
+using CourseManagement.Enums;
 using CourseManagement.Models;
+using System.Linq;
 
 namespace CourseManagement.Core
 {
@@ -8,15 +10,7 @@ namespace CourseManagement.Core
     /// </summary>
     public class UserCredentialsManager
     {
-        private readonly UserCredentialsDataManager userCredDataManager;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UserCredentialsManager"/> class.
-        /// </summary>
-        public UserCredentialsManager()
-        {
-            this.userCredDataManager = new UserCredentialsDataManager();
-        }
+        private readonly CourseManagementDbContext context = new CourseManagementDbContext();
 
         /// <summary>
         /// Checks to see if the username exist
@@ -25,62 +19,39 @@ namespace CourseManagement.Core
         /// <returns>Returns whether or not the username exist.</returns>
         public bool DoesUsernameExist(string username)
         {
-            var userFound = this.userCredDataManager.GetUserCredentialStatus(username).Result;
-            if (userFound == null || string.IsNullOrEmpty(userFound.Username))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Checks to see if the username and password exist
-        /// </summary>
-        /// <param name="credentials">The credentials to be checked.</param>
-        /// <returns>Returns whether or not the username and password exist.</returns>
-        public bool DoesUsernameAndPasswordExist(Credentials credentials)
-        {
-            var userFound = this.userCredDataManager.LoginWithUserCredentials(credentials).Result;
-            if (userFound == null || string.IsNullOrEmpty(userFound.Username))
-            {
-                return false;
-            }
-
-            return true;
+            username = username.Trim().ToLower();
+            return context.Credentials.Any(c => c.Username == username);
         }
         
         /// <summary>
-        /// Logs in to the exisiting account.
+        /// Logs in to an exisiting account.
         /// </summary>
         /// <param name="credentials">The credentials used to log in.</param>
         /// <returns>Returns the user that has logged in.</returns>
         public User LoginToExistingAccount(Credentials credentials)
         {
-            if (!this.DoesUsernameExist(credentials.Username))
-            {
-                return null;
-            }
-            else
-            {
-                var user = this.LoginToGetUserInfo(credentials);
-                if (user == null || string.IsNullOrEmpty(user.FirstName))
-                {
-                    return null;
-                }
-
-                return user;
-            }
+            var credentialsFound = context.Credentials.FirstOrDefault(c => c.Username == credentials.Username && c.Password == credentials.Password);
+            return credentialsFound?.UserType == credentials.UserType ? this.GetUserInfoBasedOnCredentialsFound(credentialsFound) : null;
         }
 
         /// <summary>
-        /// Logins in to get the user information.
+        /// Gets the user's information based on the credentials found
         /// </summary>
-        /// <param name="credentials">The credentials used to log in.</param>
-        /// <returns>Returns the user that has logged in.</returns>
-        private User LoginToGetUserInfo(Credentials credentials)
+        /// <param name="credentialsFound">The credentials found for the user.</param>
+        /// <returns>Returns the user's information.</returns>
+        private User GetUserInfoBasedOnCredentialsFound(Credentials credentialsFound)
         {
-            return this.userCredDataManager.LoginWithUserCredentials(credentials).Result;
+            switch (credentialsFound?.UserType)
+            {
+                case UserType.Student:
+                    return context.Students.First(s => s.Credentials.Id == credentialsFound.Id);
+                case UserType.Instructor:
+                    return context.Instructors.First(s => s.Credentials.Id == credentialsFound.Id);
+                case UserType.Administrator:
+                    return context.Administrators.First(s => s.Credentials.Id == credentialsFound.Id);
+            }
+
+            return null;
         }
     }
 }

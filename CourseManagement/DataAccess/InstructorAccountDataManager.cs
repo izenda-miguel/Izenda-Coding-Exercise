@@ -16,7 +16,7 @@ namespace CourseManagement.DataAccess
         /// Initializes a new instance of the <see cref="InstructorAccountDataManager"/> class.
         /// </summary>
         public InstructorAccountDataManager()
-            : base(ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString)
+            : base(ConfigurationManager.ConnectionStrings["EntityDbConnection"].ConnectionString)
         {
         }
 
@@ -37,8 +37,8 @@ namespace CourseManagement.DataAccess
             {
                 new SqlParameter("@firstName", SqlDbType.NVarChar) { Value = instructor.FirstName },
                 new SqlParameter("@lastName", SqlDbType.NVarChar) { Value = instructor.LastName },
-                new SqlParameter("@username", SqlDbType.NVarChar) { Value = instructor.Username },
-                new SqlParameter("@password", SqlDbType.NVarChar) { Value = instructor.Password },
+                new SqlParameter("@username", SqlDbType.NVarChar) { Value = instructor.Credentials.Username },
+                new SqlParameter("@password", SqlDbType.NVarChar) { Value = instructor.Credentials.Username },
                 new SqlParameter("@userType", SqlDbType.NVarChar) { Value = instructor.UserType },
                 new SqlParameter("@hireDate", SqlDbType.Date) { Value = instructor.HireDate.Date }
             });
@@ -98,7 +98,7 @@ namespace CourseManagement.DataAccess
                 instructor.Id = Convert.ToInt32(reader["Id"]);
                 instructor.FirstName = reader["FirstName"].ToString();
                 instructor.LastName = reader["LastName"].ToString();
-                instructor.Username = reader["Username"].ToString();
+                instructor.Credentials.Username = reader["Username"].ToString();
                 instructor.HireDate = DateTime.Parse(reader["HireDate"].ToString());
             }
 

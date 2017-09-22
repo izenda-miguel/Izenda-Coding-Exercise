@@ -17,9 +17,15 @@ namespace CourseManagement.Core.Account
         }
 
         /// <summary>
-        /// The event when needing more information.
+        /// Sets the user information
         /// </summary>
-        public EventHandler MoreInformationNeeded { get; private set; }
+        /// <param name="user">The user information.</param>
+        public abstract void SetUserInformation(User user);
+
+        /// <summary>
+        /// Gets and sets the full user information.
+        /// </summary>
+        public abstract User GetAndSetFullUserInformation();
 
         /// <summary>
         /// Creates the user account.
@@ -27,15 +33,9 @@ namespace CourseManagement.Core.Account
         public abstract void CreateAccount();
 
         /// <summary>
-        /// Gets the current account info.
+        /// The event when needing more information.
         /// </summary>
-        /// <returns>Returns the current account.</returns>
-        public abstract User GetAccountInfo();
-
-        /// <summary>
-        /// Retrieves the full account information.
-        /// </summary>
-        public abstract void RetrieveFullAccountInformation();
+        public EventHandler MoreInformationNeeded { get; private set; }
 
         /// <summary>
         /// Gets the additional information needed for the user.

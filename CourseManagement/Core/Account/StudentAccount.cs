@@ -1,6 +1,10 @@
 ﻿using System;
 using CourseManagement.DataAccess;
 using CourseManagement.Models;
+using System.Diagnostics;
+using System.Linq;
+using System.Data.Entity;
+using System.Collections.Generic;
 
 namespace CourseManagement.Core.Account
 {
@@ -9,8 +13,14 @@ namespace CourseManagement.Core.Account
     /// </summary>
     public class StudentAccount : AccountBase
     {
-        private readonly StudentAccountDataManager studentAccountDataManager;
-        private readonly CourseGradesDataManager courseGradesDataManager;
+        private readonly CourseManagementDbContext context = new CourseManagementDbContext();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StudentAccount"/> class.
+        /// </summary>
+        public StudentAccount()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StudentAccount"/> class.
@@ -18,9 +28,7 @@ namespace CourseManagement.Core.Account
         /// <param name="user">The current user.</param>
         public StudentAccount(User user)
         {
-            this.studentAccountDataManager = new StudentAccountDataManager();
-            this.courseGradesDataManager = new CourseGradesDataManager();
-            this.Student = new Student(user);
+            this.Student = (Student)user;
         }
 
         /// <summary>
@@ -29,21 +37,21 @@ namespace CourseManagement.Core.Account
         public Student Student { get; private set; }
 
         /// <summary>
-        /// Gets the current account info.
+        /// Sets the user information
         /// </summary>
-        /// <returns>Returns the current account.</returns>
-        public override User GetAccountInfo()
+        /// <param name="user">The user information.</param>
+        public override void SetUserInformation(User user)
         {
-            return this.Student;
+            this.Student = new Student(user);
         }
 
         /// <summary>
-        /// Retrieves the full account information.
+        /// Gets and sets the full user information.
         /// </summary>
-        public override void RetrieveFullAccountInformation()
+        public override User GetAndSetFullUserInformation()
         {
-            this.Student = this.studentAccountDataManager.GetStudentAccountInfo(this.Student.Username).Result;
-            this.Student.Courses = this.courseGradesDataManager.GetStudentsCourseGrades(this.Student.Id).Result;
+            this.Student = context.Students.Include(p => p.Courses).Include(p => p.Credentials).SingleOrDefault(s => s.Id == this.Student.Id);
+            return this.Student;
         }
 
         /// <summary>
@@ -51,18 +59,25 @@ namespace CourseManagement.Core.Account
         /// </summary>
         public override void CreateAccount()
         {
-            this.studentAccountDataManager.InsertStudentAccountInfo(this.Student).Wait();
+            context.Students.Add(this.Student);
+            context.SaveChangesAsync().Wait();
         }
 
         /// <summary>
-        /// Registers for the course passed.
+        /// Current student registers for the course.
         /// </summary>
         /// <param name="course">The course to register for.</param>
         public void RegisterForCourse(Course course)
         {
             if (course != null)
             {
-                this.courseGradesDataManager.InsertCourseToCourseGrades(course, this.Student.Id).Wait();
+                context.CourseGrades.Add(new CourseGrade
+                {
+                    Course = course,
+                    StudentId = this.Student.Id
+                });
+
+                context.SaveChangesAsync().Wait();
             }
         }
 

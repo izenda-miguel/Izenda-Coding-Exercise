@@ -16,7 +16,7 @@ namespace CourseManagement.DataAccess
         /// Initializes a new instance of the <see cref="CourseDataManager"/> class.
         /// </summary>
         public CourseDataManager()
-            : base(ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString)
+            : base(ConfigurationManager.ConnectionStrings["EntityDbConnection"].ConnectionString)
         {
         }
 
